@@ -1,0 +1,24 @@
+.checkbox:nth-of-type(1) {
+  color:#E41A1C;
+}
+.checkbox:nth-of-type(2) {
+  color:#377EB8;
+}
+.checkbox:nth-of-type(3) {
+  color:#4DAF4A;
+}
+.checkbox:nth-of-type(4) {
+  color:#984EA3;
+}
+.checkbox:nth-of-type(5) {
+  color:#FF7F00;
+}
+
+.attrib {
+  color:gray;
+}
+
+.subtitle {
+  color:gray;
+  font-size:2rem;
+}

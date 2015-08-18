@@ -1,3 +1,4 @@
+
 library(shiny)
 library(DT)
 library(stringr)
@@ -6,31 +7,29 @@ library(rbokeh)
 library(RColorBrewer)
 library(threejs)
 
-data <- readRDS('ede_data.rds')
+data <- readRDS('ede_data.rds') %>%
+      mutate(color = brewer.pal(7, 'Set1')[as.factor(PLANETDISCMETH)],
+             Name=NAME,
+             Year=DATE,
+             Mass=sprintf("%.2f", MASS),
+             Period=sprintf("%.2f", PER),
+             DiscMethod=PLANETDISCMETH)
 
 shinyServer(function(input, output) {  
   filtered_data <- reactive({
     disc_methods <- input$disc_methods
     year_range <- input$years
-
-    data %>%
-      mutate(color = brewer.pal(7, 'Set1')[as.factor(PLANETDISCMETH)],
-             Name=NAME,
-             Year=DATE,
-             Mass=sprintf("%.2f", data$MASS),
-             Period=sprintf("%.2f", data$PER),
-             DiscMethod=PLANETDISCMETH) %>%
-      filter(PLANETDISCMETH %in% disc_methods &
+    
+    data %>% filter(PLANETDISCMETH %in% disc_methods &
                                    DATE >= year_range[1] &
                                    DATE <= year_range[2])
   })
 
-  
-  output$plot_planets_3d <- renderScatterplotThree({
-    data <- filtered_data()
-    scatterplot3js(log10(data$PER), log10(data$MASS), data$DATE, size=1, col=data$color,
-                   renderer='auto')    
-  })
+ output$plot_planets_3d <- renderScatterplotThree({
+   data <- filtered_data()
+   scatterplot3js(log10(data$PER), log10(data$MASS), data$DATE, size=1, col=data$color,
+                  renderer='canvas')    
+ })
   
 
   output$plot_planets <- renderRbokeh({
